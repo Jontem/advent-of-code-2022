@@ -17,14 +17,15 @@ namespace Day3
             var sums = File.ReadAllLines("input")
             .Select((rucksack) =>
             {
-                var c1s = rucksack
+                var compartment1 = rucksack
                 .Substring(0, rucksack.Length / 2)
                 .ToList();
-                var c2s = rucksack
+                var compartment2 = rucksack
                 .Substring(rucksack.Length / 2)
                 .ToList();
 
-                return c1s.Intersect(c2s)
+                return compartment1
+                .Intersect(compartment2)
                 .Select((c) => priorities.IndexOf(c) + 1)
                 .Sum();
             });
