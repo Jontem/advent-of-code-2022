@@ -15,23 +15,18 @@ namespace Day3
             .ToList();
 
             var sums = File.ReadAllLines("input")
-            .Aggregate(new List<int>(), (acc, seed) =>
+            .Select((rucksack) =>
             {
-                var c1s = seed.Substring(0, seed.Length / 2)
+                var c1s = rucksack
+                .Substring(0, rucksack.Length / 2)
                 .ToList();
-                var c2s = seed.Substring(seed.Length / 2)
+                var c2s = rucksack
+                .Substring(rucksack.Length / 2)
                 .ToList();
 
-                var set = new HashSet<Char>();
-                foreach (var c1 in c1s)
-                {
-                    if (c2s.IndexOf(c1) > -1 && !set.Contains(c1))
-                    {
-                        set.Add(c1);
-                    }
-                }
-                acc.Add(set.Select((c) => priorities.IndexOf(c) + 1).Sum());
-                return acc;
+                return c1s.Intersect(c2s)
+                .Select((c) => priorities.IndexOf(c) + 1)
+                .Sum();
             });
 
             Console.WriteLine(sums.Sum());

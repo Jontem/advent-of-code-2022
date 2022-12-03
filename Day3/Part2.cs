@@ -16,21 +16,16 @@ namespace Day3
 
             var sums = File.ReadAllLines("input")
             .Chunk(3)
-            .Aggregate(new List<int>(), (acc, seed) =>
+            .Select((elfGroup) =>
             {
-                var elf1 = seed[0].ToList();
-                var elf2 = seed[1].ToList();
-                var elf3 = seed[2].ToList();
-                var set = new HashSet<char>();
-                foreach (var c1 in elf1)
-                {
-                    if (elf2.IndexOf(c1) > -1 && elf3.IndexOf(c1) > -1 && !set.Contains(c1))
-                    {
-                        set.Add(c1);
-                    }
-                }
-                acc.Add(set.Select((c) => priorities.IndexOf(c) + 1).Sum());
-                return acc;
+                var elf1 = elfGroup[0].ToList();
+                var elf2 = elfGroup[1].ToList();
+                var elf3 = elfGroup[2].ToList();
+                return elf1
+                .Intersect(elf2)
+                .Intersect(elf3)
+                .Select((c) => priorities.IndexOf(c) + 1)
+                .Sum();
             });
 
             Console.WriteLine(sums.Sum());
