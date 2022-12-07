@@ -11,12 +11,14 @@
 
     public static void Solve1()
     {
-        var (files, dirs) = Read();
+        var (files, dirs) = ReadInput();
         var totalSize = 0;
         foreach (var dir in dirs)
         {
-            var filesInDir = files.Where(x => x.Key.StartsWith(dir)).ToList();
-            var dirSize = filesInDir.Sum(x => x.Value);
+            var dirSize = files
+            .Where(x => x.Key.StartsWith(dir))
+            .Sum(x => x.Value);
+
             if (dirSize >= 100000)
             {
                 totalSize += dirSize;
@@ -29,7 +31,8 @@
     {
         var total = 70000000;
         var min = 30000000;
-        var (files, dirs) = Read();
+
+        var (files, dirs) = ReadInput();
         var freeNow = total - files.Where(x => x.Key.StartsWith("/")).Sum(x => x.Value);
         var needed = min - freeNow;
         var minSize = int.MaxValue;
@@ -40,7 +43,7 @@
             .Where(x => x.Key.StartsWith(dir))
             .Sum(x => x.Value);
 
-            if (dirSize > needed)
+            if (dirSize >= needed)
             {
                 minSize = Math.Min(minSize, dirSize);
             }
@@ -48,7 +51,7 @@
         Console.WriteLine(minSize);
     }
 
-    private static (Dictionary<string, int>, HashSet<string>) Read()
+    private static (Dictionary<string, int>, HashSet<string>) ReadInput()
     {
         var currentDir = "";
         var files = new Dictionary<string, int>();
@@ -58,7 +61,6 @@
             if (line.StartsWith("$ cd"))
             {
                 currentDir = ChangeDirectory(currentDir, line);
-                // Console.WriteLine("currentDir " + currentDir);
             }
             else if (line.StartsWith("$ ls"))
             {
@@ -79,23 +81,14 @@
 
     public static string ChangeDirectory(string currentDir, string command)
     {
-        if (command.Contains(".."))
+        if (command.EndsWith(".."))
         {
             var parts = currentDir.Split("/");
-            if (parts.Length <= 2)
-            {
-                return "/";
-            }
-            return string.Join("/", parts.SkipLast(1));
+            return parts.Length <= 2 ? "/" : string.Join("/", parts.SkipLast(1));
         }
 
         var newDir = command.Replace("$ cd ", "");
-        if (newDir == "/")
-        {
-            return "/";
-        }
-
-        return currentDir == "/" ? $"{currentDir}{newDir}" : $"{currentDir}/{newDir}";
+        return currentDir == "/" ? $"/{newDir}" : $"{currentDir}/{newDir}";
     }
 
     public static string GetFilePath(string currentDir, string fileName)
