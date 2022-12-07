@@ -16,7 +16,7 @@
         .Select(dir => files
             .Where(f => f.Key.StartsWith(dir))
             .Sum(x => x.Value))
-        .Where(x => x >= 100000)
+        .Where(x => x <= 100000)
         .Sum();
 
         Console.WriteLine(totalSize);
