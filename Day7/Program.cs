@@ -12,18 +12,13 @@
     public static void Solve1()
     {
         var (files, dirs) = ReadInput();
-        var totalSize = 0;
-        foreach (var dir in dirs)
-        {
-            var dirSize = files
-            .Where(x => x.Key.StartsWith(dir))
-            .Sum(x => x.Value);
+        var totalSize = dirs
+        .Select(dir => files
+            .Where(f => f.Key.StartsWith(dir))
+            .Sum(x => x.Value))
+        .Where(x => x >= 100000)
+        .Sum();
 
-            if (dirSize >= 100000)
-            {
-                totalSize += dirSize;
-            }
-        }
         Console.WriteLine(totalSize);
     }
 
@@ -35,19 +30,14 @@
         var (files, dirs) = ReadInput();
         var freeNow = total - files.Where(x => x.Key.StartsWith("/")).Sum(x => x.Value);
         var needed = min - freeNow;
-        var minSize = int.MaxValue;
 
-        foreach (var dir in dirs)
-        {
-            var dirSize = files
+        var minSize = dirs
+        .Select(dir => files
             .Where(x => x.Key.StartsWith(dir))
-            .Sum(x => x.Value);
+            .Sum(x => x.Value))
+        .Where(dirSize => dirSize >= needed)
+        .Min();
 
-            if (dirSize >= needed)
-            {
-                minSize = Math.Min(minSize, dirSize);
-            }
-        }
         Console.WriteLine(minSize);
     }
 
