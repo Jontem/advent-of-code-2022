@@ -18,7 +18,8 @@
             for (var x = 0; x < grid[0].Count; x++)
             {
                 var cord = new Coordinate(x, y);
-                if (IsVisible(grid, cord))
+                var (isVisable, _) = Explore(grid, cord);
+                if (isVisable)
                 {
                     visible.Add(cord);
                 }
@@ -36,7 +37,8 @@
             for (var x = 0; x < grid[0].Count; x++)
             {
                 var cord = new Coordinate(x, y);
-                largestScore = Math.Max(largestScore, CalculateScore(grid, cord));
+                var (_, score) = Explore(grid, cord);
+                largestScore = Math.Max(largestScore, score);
             }
         }
         Console.WriteLine(largestScore);
@@ -49,80 +51,46 @@
         .ToList();
     }
 
-    public static bool IsVisible(List<List<int>> grid, Coordinate start)
+
+    public static (bool, int) Explore(List<List<int>> grid, Coordinate start)
     {
-
-        if (start.Y == 0 || start.Y == grid.Count - 1 || start.X == 0 || start.X == grid[0].Count - 1)
-        {
-            return true;
-        }
-
-        var dirs = new List<Coordinate> {
-            new Coordinate(0, 1),
-            new Coordinate(0, -1),
-            new Coordinate(1, 0),
-            new Coordinate(-1, 0)
-        };
-
-        var curr = grid[start.Y][start.X];
-        foreach (var dir in dirs)
-        {
-            var next = new Coordinate(start.X + dir.X, start.Y + dir.Y);
-            var visible = true;
-            while ((next.Y >= 0 && next.Y < grid.Count) && (next.X >= 0 && next.X < grid[0].Count))
-            {
-                var nextTree = grid[next.Y][next.X];
-                if (nextTree >= curr)
-                {
-                    visible = false;
-                }
-                next = new Coordinate(next.X + dir.X, next.Y + dir.Y);
-            }
-
-            if (visible)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static int CalculateScore(List<List<int>> grid, Coordinate start)
-    {
-        if (start.Y == 0 || start.Y == grid.Count - 1 || start.X == 0 || start.X == grid[0].Count - 1)
-        {
-            return 0;
-        }
-
-        var dirs = new List<Coordinate> {
-            new Coordinate(0, 1),
-            new Coordinate(0, -1),
-            new Coordinate(1, 0),
-            new Coordinate(-1, 0)
-        };
-
-        var curr = grid[start.Y][start.X];
+        var dirVisibility = new List<bool>();
         var scores = new List<int>();
+        if (start.Y == 0 || start.Y == grid.Count - 1 || start.X == 0 || start.X == grid[0].Count - 1)
+        {
+            dirVisibility.Add(true);
+            scores.Add(0);
+        }
+
+        var dirs = new List<Coordinate> {
+            new Coordinate(0, 1),
+            new Coordinate(0, -1),
+            new Coordinate(1, 0),
+            new Coordinate(-1, 0)
+        };
+
+        var curr = grid[start.Y][start.X];
         foreach (var dir in dirs)
         {
             var dirScore = 0;
             var next = new Coordinate(start.X + dir.X, start.Y + dir.Y);
+            var visible = true;
             while ((next.Y >= 0 && next.Y < grid.Count) && (next.X >= 0 && next.X < grid[0].Count))
             {
                 dirScore++;
                 var nextTree = grid[next.Y][next.X];
                 if (nextTree >= curr)
                 {
+                    visible = false;
                     break;
                 }
                 next = new Coordinate(next.X + dir.X, next.Y + dir.Y);
             }
+            dirVisibility.Add(visible);
             scores.Add(dirScore);
         }
 
-        return scores
-        .Aggregate((a, x) => a * x);
+        return (dirVisibility.Any(x => x), scores.Aggregate((a, x) => a * x));
     }
 
     public record Coordinate(int X, int Y);
