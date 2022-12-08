@@ -17,12 +17,10 @@
         {
             for (var x = 0; x < grid[0].Count; x++)
             {
-                // Console.WriteLine(grid[y][x]);
                 var cord = new Coordinate(x, y);
                 if (IsVisible(grid, cord))
                 {
                     visible.Add(cord);
-                    // Console.WriteLine($"Visible x={x}, y={y}, value={grid[y][x]}");
                 }
             }
         }
@@ -37,7 +35,6 @@
         {
             for (var x = 0; x < grid[0].Count; x++)
             {
-                // Console.WriteLine(grid[y][x]);
                 var cord = new Coordinate(x, y);
                 largestScore = Math.Max(largestScore, CalculateScore(grid, cord));
             }
@@ -88,8 +85,6 @@
             }
         }
 
-        // Console.WriteLine("hek");
-        // Console.WriteLine(start);
         return false;
     }
 
@@ -126,8 +121,6 @@
             scores.Add(dirScore);
         }
 
-        // Console.WriteLine("hek");
-        // Console.WriteLine(start);
         return scores
         .Aggregate((a, x) => a * x);
     }
