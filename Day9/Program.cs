@@ -21,8 +21,7 @@
     {
         var head = new Coordinate(0, 0);
         var tail = new Coordinate(0, 0);
-        var headPos = new List<Coordinate>() { head };
-        var tailPos = new List<Coordinate>() { tail };
+        var tailHistory = new List<Coordinate>() { tail };
         foreach (var line in File.ReadAllLines("input"))
         {
             var parts = line.Split(" ");
@@ -32,19 +31,17 @@
             for (var i = 1; i <= steps; i++)
             {
                 head = new Coordinate(head.X + direction.X, head.Y + direction.Y);
-                headPos.Add(head);
                 if (Math.Abs(head.X - tail.X) > 1 || Math.Abs(head.Y - tail.Y) > 1)
                 {
-                    tail = headPos[headPos.Count - 2];
-                    tailPos.Add(tail);
-                    // Console.WriteLine("1");
+                    tail = GetNewKnotPosition(head, tail);
+                    tailHistory.Add(tail);
                 }
             }
 
 
         }
 
-        Console.WriteLine(new HashSet<Coordinate>(tailPos).Count);
+        Console.WriteLine(new HashSet<Coordinate>(tailHistory).Count);
     }
 
     public static void Solve2()
@@ -71,7 +68,6 @@
                     if (Math.Abs(prevKnot.X - tails[j].X) > 1 || Math.Abs(prevKnot.Y - tails[j].Y) > 1)
                     {
                         tails[j] = GetNewKnotPosition(prevKnot, tails[j]);
-
                     }
                     prevKnot = tails[j];
                 }
