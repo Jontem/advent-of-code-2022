@@ -6,7 +6,6 @@
         Solve1();
         Console.WriteLine("------------- Part 2 -------------");
         Solve2();
-
     }
 
     public record Vector2d(int X, int Y);
@@ -63,27 +62,10 @@
         return new HashSet<Vector2d>(tailHist).Count;
     }
 
-    private static Vector2d GetNewKnotPosition(Vector2d prevKnot, Vector2d tail)
+    private static Vector2d GetNewKnotPosition(Vector2d prevKnot, Vector2d knot)
     {
-        if (prevKnot.X != tail.X && prevKnot.Y != tail.Y)
-        {
-            var moveX = prevKnot.X < tail.X ? -1 : 1;
-            var moveY = prevKnot.Y < tail.Y ? -1 : 1;
-            return new Vector2d(tail.X + moveX, tail.Y + moveY);
-        }
-        else if (prevKnot.X != tail.X)
-        {
-            var moveX = prevKnot.X < tail.X ? -1 : 1;
-            return new Vector2d(tail.X + moveX, tail.Y);
-        }
-        else if (prevKnot.Y != tail.Y)
-        {
-            var moveY = prevKnot.Y < tail.Y ? -1 : 1;
-            return new Vector2d(tail.X, tail.Y + moveY);
-        }
-        else
-        {
-            throw new Exception("dont go here");
-        }
+        var moveX = prevKnot.X.CompareTo(knot.X);
+        var moveY = prevKnot.Y.CompareTo(knot.Y);
+        return new Vector2d(knot.X + moveX, knot.Y + moveY);
     }
 }
