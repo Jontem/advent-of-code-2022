@@ -20,36 +20,21 @@
 
     public static void Solve1()
     {
-        var head = new Vector2d(0, 0);
-        var tailHistory = new List<Vector2d>() { new Vector2d(0, 0) };
-        foreach (var line in File.ReadAllLines("input"))
-        {
-            var parts = line.Split(" ");
-            var direction = Directions[parts[0]];
-            var steps = int.Parse(parts[1]);
-
-            for (var i = 1; i <= steps; i++)
-            {
-                head = new Vector2d(head.X + direction.X, head.Y + direction.Y);
-                var tail = tailHistory.Last();
-                if (Math.Abs(head.X - tail.X) > 1 || Math.Abs(head.Y - tail.Y) > 1)
-                {
-                    tail = GetNewKnotPosition(head, tail);
-                    tailHistory.Add(tail);
-                }
-            }
-        }
-
-        Console.WriteLine(new HashSet<Vector2d>(tailHistory).Count);
+        Console.WriteLine(CalculateTailVisits(1));
     }
 
     public static void Solve2()
     {
+        Console.WriteLine(CalculateTailVisits(9));
+    }
+
+    private static int CalculateTailVisits(int knotSize)
+    {
         var head = new Vector2d(0, 0);
-        var knots = Enumerable.Range(0, 9)
+        var knots = Enumerable.Range(0, knotSize)
         .Select(_ => new Vector2d(0, 0))
         .ToList();
-        var tailHist = new List<Vector2d>() { new Vector2d(0, 0) };
+        var tailHist = knots.Select(_ => new Vector2d(0, 0)).ToList();
 
         foreach (var line in File.ReadAllLines("input"))
         {
@@ -75,8 +60,7 @@
             }
         }
 
-        Console.WriteLine(new HashSet<Vector2d>(tailHist).Count);
-
+        return new HashSet<Vector2d>(tailHist).Count;
     }
 
     private static Vector2d GetNewKnotPosition(Vector2d prevKnot, Vector2d tail)
