@@ -70,39 +70,41 @@
                 {
                     if (Math.Abs(prevKnot.X - tails[j].X) > 1 || Math.Abs(prevKnot.Y - tails[j].Y) > 1)
                     {
-                        if (prevKnot.X != tails[j].X && prevKnot.Y != tails[j].Y)
-                        {
-                            var moveX = prevKnot.X < tails[j].X ? -1 : 1;
-                            var moveY = prevKnot.Y < tails[j].Y ? -1 : 1;
-                            tails[j] = new Coordinate(tails[j].X + moveX, tails[j].Y + moveY);
-                        }
-                        else if (prevKnot.X != tails[j].X)
-                        {
-                            var moveX = prevKnot.X < tails[j].X ? -1 : 1;
-                            tails[j] = new Coordinate(tails[j].X + moveX, tails[j].Y);
-                        }
-                        else if (prevKnot.Y != tails[j].Y)
-                        {
-                            var moveY = prevKnot.Y < tails[j].Y ? -1 : 1;
-                            tails[j] = new Coordinate(tails[j].X, tails[j].Y + moveY);
-                        }
-                        else
-                        {
-                            throw new Exception("dont go here");
-                        }
+                        tails[j] = GetNewKnotPosition(prevKnot, tails[j]);
 
-                        if (j == 8)
-                        {
-                            tailHist.Add(tails[j]);
-                        }
                     }
-
                     prevKnot = tails[j];
                 }
+
+                tailHist.Add(tails[tails.Count - 1]);
             }
         }
 
         Console.WriteLine(new HashSet<Coordinate>(tailHist).Count);
 
+    }
+
+    private static Coordinate GetNewKnotPosition(Coordinate prevKnot, Coordinate tail)
+    {
+        if (prevKnot.X != tail.X && prevKnot.Y != tail.Y)
+        {
+            var moveX = prevKnot.X < tail.X ? -1 : 1;
+            var moveY = prevKnot.Y < tail.Y ? -1 : 1;
+            return new Coordinate(tail.X + moveX, tail.Y + moveY);
+        }
+        else if (prevKnot.X != tail.X)
+        {
+            var moveX = prevKnot.X < tail.X ? -1 : 1;
+            return new Coordinate(tail.X + moveX, tail.Y);
+        }
+        else if (prevKnot.Y != tail.Y)
+        {
+            var moveY = prevKnot.Y < tail.Y ? -1 : 1;
+            return new Coordinate(tail.X, tail.Y + moveY);
+        }
+        else
+        {
+            throw new Exception("dont go here");
+        }
     }
 }
