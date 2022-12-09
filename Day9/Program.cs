@@ -20,8 +20,7 @@
     public static void Solve1()
     {
         var head = new Coordinate(0, 0);
-        var tail = new Coordinate(0, 0);
-        var tailHistory = new List<Coordinate>() { tail };
+        var tailHistory = new List<Coordinate>() { new Coordinate(0, 0) };
         foreach (var line in File.ReadAllLines("input"))
         {
             var parts = line.Split(" ");
@@ -31,6 +30,7 @@
             for (var i = 1; i <= steps; i++)
             {
                 head = new Coordinate(head.X + direction.X, head.Y + direction.Y);
+                var tail = tailHistory.Last();
                 if (Math.Abs(head.X - tail.X) > 1 || Math.Abs(head.Y - tail.Y) > 1)
                 {
                     tail = GetNewKnotPosition(head, tail);
