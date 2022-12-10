@@ -28,21 +28,16 @@
                 }
                 if (measureCycle.Contains(cycle))
                 {
-                    Console.WriteLine($"Cycle{cycle}: x={x} x*cycle={x * cycle}");
                     signalStrengths.Add(x * cycle);
                 }
             }
 
         }
-        Console.WriteLine("x: " + x);
-        Console.WriteLine("cycle: " + cycle);
-        Console.WriteLine("values: " + signalStrengths.Sum());
+        Console.WriteLine(signalStrengths.Sum());
     }
 
     public static void Solve2()
     {
-        var measureCycle = new HashSet<int> { 40, 80, 120, 160, 200, 240 };
-        var signalStrengths = new List<int>();
         int cycle = 0, x = 1;
         var row = "";
         foreach (var line in File.ReadAllLines("input"))
@@ -59,8 +54,7 @@
                     x += int.Parse(parts[1]);
                 }
 
-
-                if (measureCycle.Contains(cycle))
+                if (cycle % 40 == 0)
                 {
                     Console.WriteLine(row);
                     row = "";
@@ -68,9 +62,6 @@
             }
 
         }
-        Console.WriteLine("x: " + x);
-        Console.WriteLine("cycle: " + cycle);
-        Console.WriteLine("values: " + signalStrengths.Sum());
     }
 
     static bool IsSpriteInSync(int cycle, int x)
