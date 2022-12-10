@@ -12,7 +12,6 @@
 
     public static void Solve1()
     {
-        var measureCycle = new HashSet<int> { 20, 60, 100, 140, 180, 220 };
         var signalStrengths = new List<int>();
         int cycle = 1, x = 1;
         foreach (var line in File.ReadAllLines("input"))
@@ -26,7 +25,8 @@
                 {
                     x += int.Parse(parts[1]);
                 }
-                if (measureCycle.Contains(cycle))
+
+                if (cycle % 40 == 20)
                 {
                     signalStrengths.Add(x * cycle);
                 }
