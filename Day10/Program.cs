@@ -21,10 +21,9 @@
             for (var i = 0; i < cycleLength; i++)
             {
                 cycle++;
-                if (i == 1)
-                {
-                    x += int.Parse(parts[1]);
-                }
+
+                // addx instruction adds on second cycle
+                x += i == 1 ? int.Parse(parts[1]) : 0;
 
                 if (cycle % 40 == 20)
                 {
@@ -46,13 +45,12 @@
             var cycleLength = parts.Length > 1 ? 2 : 1;
             for (var i = 0; i < cycleLength; i++)
             {
-                row += IsSpriteInSync(cycle % 40, x) ? "#" : ".";
+                // Check if we're in sync with sprite
+                row += Enumerable.Range(x - 1, 3).Contains(cycle % 40) ? "#" : ".";
                 cycle++;
 
-                if (i == 1)
-                {
-                    x += int.Parse(parts[1]);
-                }
+                // addx instruction adds on second cycle
+                x += i == 1 ? int.Parse(parts[1]) : 0;
 
                 if (cycle % 40 == 0)
                 {
@@ -62,10 +60,5 @@
             }
 
         }
-    }
-
-    static bool IsSpriteInSync(int cycle, int x)
-    {
-        return cycle == x - 1 || cycle == x || cycle == x + 1;
     }
 }
