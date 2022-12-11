@@ -10,8 +10,6 @@ internal class Program
         Solve2();
     }
 
-
-
     public static void Solve1()
     {
         var monkeys = ParseMonkeys();
@@ -38,14 +36,41 @@ internal class Program
             }
         }
 
-        // foreach (var m in monkeys)
-        // {
-        // Console.WriteLine($"Monkey{m.id}: Times: {monkeyHist[m.id]}, Items: {string.Join(",", m.Items)}");
-        // }
         Console.WriteLine(monkeyHist.OrderBy(x => x).TakeLast(2).Aggregate((a, b) => a * b));
     }
 
-    private record Monkey(int id, Queue<int> Items, Func<int, int> CalculateWorryLevel, int WorryLevelDivisor, int TrueMonkey, int FalseMonkey);
+    public static void Solve2()
+    {
+        var monkeys = ParseMonkeys();
+        var monkeyInspections = monkeys.Select(_ => (long)0).ToList();
+        var commonMultiple = monkeys.Select(x => x.WorryLevelDivisor).Aggregate((a, b) => a * b);
+        for (var i = 0; i < 10000; i++)
+        {
+            foreach (var monkey in monkeys)
+            {
+                while (monkey.Items.Count > 0)
+                {
+                    var item = monkey.Items.Dequeue();
+                    long worryLevelRemainder = monkey.CalculateWorryLevel(item) % commonMultiple;
+                    var nextMonkey = worryLevelRemainder % monkey.WorryLevelDivisor == 0 ? monkeys[monkey.TrueMonkey] : monkeys[monkey.FalseMonkey];
+                    nextMonkey.Items.Enqueue(worryLevelRemainder);
+                    monkeyInspections[monkey.id]++;
+                }
+            }
+        }
+
+        Console.WriteLine(monkeyInspections.OrderBy(x => x).TakeLast(2).Aggregate((a, b) => a * b));
+    }
+
+    private static void printWorryLevels(List<Monkey> monkeys, List<long> monkeyHist)
+    {
+        foreach (var m in monkeys)
+        {
+            Console.WriteLine($"Monkey{m.id}: Times: {monkeyHist[m.id]}, Items: {string.Join(",", m.Items)}");
+        }
+    }
+
+    private record Monkey(int id, Queue<long> Items, Func<long, long> CalculateWorryLevel, int WorryLevelDivisor, int TrueMonkey, int FalseMonkey);
     private static List<Monkey> ParseMonkeys()
     {
         var regex = new Regex(".+?\\n\\s\\sStarting items:(.+?)\\n\\s\\sOperation: (.+?)\\n\\s\\sTest: .+?(\\d+)\n.+?(\\d+?)\\n.+?(\\d+?)");
@@ -54,7 +79,7 @@ internal class Program
         foreach (var monkey in File.ReadAllText("input").Split("\n\n"))
         {
             var match = regex.Match(monkey);
-            var items = new Queue<int>(match.Groups[1].Value.Split(",").Select(int.Parse));
+            var items = new Queue<long>(match.Groups[1].Value.Split(",").Select(long.Parse));
             var operation = ParseOperation(match.Groups[2].Value.Split(" ", StringSplitOptions.RemoveEmptyEntries));
             var divisebleBy = match.Groups[3].Value.Split(" ", StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList()[0];
             var trueMonkey = match.Groups[4].Value.Split(" ", StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList()[0];
@@ -66,7 +91,7 @@ internal class Program
         return monkeys;
     }
 
-    private static Func<int, int> ParseOperation(string[] operation)
+    private static Func<long, long> ParseOperation(string[] operation)
     {
         var op = operation[operation.Length - 2];
 
@@ -89,9 +114,5 @@ internal class Program
             default:
                 throw new Exception("No no");
         }
-    }
-
-    public static void Solve2()
-    {
     }
 }
