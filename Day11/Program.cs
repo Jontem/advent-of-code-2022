@@ -22,14 +22,8 @@ internal class Program
                 {
                     var item = monkey.Items.Dequeue();
                     var worryLevel = monkey.CalculateWorryLevel(item) / 3;
-                    if (worryLevel % monkey.WorryLevelDivisor == 0)
-                    {
-                        monkeys[monkey.TrueMonkey].Items.Enqueue(worryLevel);
-                    }
-                    else
-                    {
-                        monkeys[monkey.FalseMonkey].Items.Enqueue(worryLevel);
-                    }
+                    var nextMonkey = worryLevel % monkey.WorryLevelDivisor == 0 ? monkeys[monkey.TrueMonkey] : monkeys[monkey.FalseMonkey];
+                    nextMonkey.Items.Enqueue(worryLevel);
 
                     monkeyHist[monkey.id]++;
                 }
