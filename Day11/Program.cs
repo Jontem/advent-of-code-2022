@@ -13,7 +13,7 @@ internal class Program
     public static void Solve1()
     {
         var monkeys = ParseMonkeys();
-        var monkeyHist = monkeys.Select(_ => 0).ToList();
+        var monkeyInspections = monkeys.Select(_ => 0).ToList();
         for (var i = 0; i < 20; i++)
         {
             foreach (var monkey in monkeys)
@@ -25,12 +25,12 @@ internal class Program
                     var nextMonkey = worryLevel % monkey.WorryLevelDivisor == 0 ? monkeys[monkey.TrueMonkey] : monkeys[monkey.FalseMonkey];
                     nextMonkey.Items.Enqueue(worryLevel);
 
-                    monkeyHist[monkey.id]++;
+                    monkeyInspections[monkey.id]++;
                 }
             }
         }
 
-        Console.WriteLine(monkeyHist.OrderBy(x => x).TakeLast(2).Aggregate((a, b) => a * b));
+        Console.WriteLine(monkeyInspections.OrderBy(x => x).TakeLast(2).Aggregate((a, b) => a * b));
     }
 
     public static void Solve2()
@@ -52,15 +52,14 @@ internal class Program
                 }
             }
         }
-
         Console.WriteLine(monkeyInspections.OrderBy(x => x).TakeLast(2).Aggregate((a, b) => a * b));
     }
 
-    private static void printWorryLevels(List<Monkey> monkeys, List<long> monkeyHist)
+    private static void printWorryLevels(List<Monkey> monkeys, List<long> monkeyInspections)
     {
         foreach (var m in monkeys)
         {
-            Console.WriteLine($"Monkey{m.id}: Times: {monkeyHist[m.id]}, Items: {string.Join(",", m.Items)}");
+            Console.WriteLine($"Monkey{m.id}: Times: {monkeyInspections[m.id]}, Items: {string.Join(",", m.Items)}");
         }
     }
 
