@@ -18,7 +18,7 @@ internal class Program
         {
             foreach (var monkey in monkeys)
             {
-                while (monkey.Items.Count != 0)
+                while (monkey.Items.Count > 0)
                 {
                     var item = monkey.Items.Dequeue();
                     var worryLevel = monkey.CalculateWorryLevel(item) / 3;
