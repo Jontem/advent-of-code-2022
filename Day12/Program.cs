@@ -1,11 +1,4 @@
-﻿// Heightmap a-z lowercase nodes, a is lowest, z highest
-// Start "S", end/goal "E"
-// With as few steps as possible
-// the next square can be at most one higher than the current
-// the next square can be much lower than the current
-// 
-
-internal class Program
+﻿internal class Program
 {
     private static void Main(string[] args)
     {
@@ -26,6 +19,31 @@ internal class Program
         Console.WriteLine("Steps: " + BFS(grid, GetStartNode(grid)));
     }
 
+    public static void Solve2()
+    {
+        var grid = File.ReadAllLines("input")
+        .Select(l => l.ToList())
+        .ToList();
+
+        var min = int.MaxValue;
+        for (var i = 0; i < grid.Count; i++)
+        {
+            for (var j = 0; j < grid[i].Count; j++)
+            {
+                if (GetValue(grid[i][j]) == 'a')
+                {
+                    var steps = BFS(grid, new Node(new Vector2d(j, i), null));
+                    if (steps > 0)
+                    {
+                        min = Math.Min(min, steps);
+                    }
+                }
+            }
+        }
+
+        Console.WriteLine("Steps: " + min);
+    }
+
     private static int BFS(List<List<char>> grid, Node start)
     {
         var queue = new Queue<Node>(new List<Node> { start });
@@ -36,8 +54,8 @@ internal class Program
             var currValue = GetValue(grid[currNode.Pos.Y][currNode.Pos.X]);
             if (grid[currNode.Pos.Y][currNode.Pos.X] == End)
             {
-
-                return CalculatePath(grid, currNode);
+                var val = CalculatePath(grid, currNode);
+                return val;
             }
             var neighbours = GetAdjacents(grid, currNode.Pos);
             foreach (var neighbourPos in neighbours)
@@ -58,10 +76,6 @@ internal class Program
         }
 
         return -1;
-    }
-
-    public static void Solve2()
-    {
     }
 
     public record Node(Vector2d Pos, Node? Parent);
@@ -117,8 +131,6 @@ internal class Program
         {
             return -1;
         }
-
-        Console.WriteLine(grid[node.Pos.Y][node.Pos.X]);
 
         return 1 + (CalculatePath(grid, node.Parent));
     }
