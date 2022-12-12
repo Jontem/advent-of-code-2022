@@ -23,8 +23,12 @@ internal class Program
         var grid = File.ReadAllLines("input")
         .Select(l => l.ToList())
         .ToList();
+        Console.WriteLine("Steps: " + BFS(grid, GetStartNode(grid)));
+    }
 
-        var queue = new Queue<Node>(new List<Node> { GetStartNode(grid) });
+    private static int BFS(List<List<char>> grid, Node start)
+    {
+        var queue = new Queue<Node>(new List<Node> { start });
         var visited = new HashSet<Vector2d>();
         while (queue.Count > 0)
         {
@@ -32,8 +36,8 @@ internal class Program
             var currValue = GetValue(grid[currNode.Pos.Y][currNode.Pos.X]);
             if (grid[currNode.Pos.Y][currNode.Pos.X] == End)
             {
-                Console.WriteLine("Steps: " + CalculatePath(grid, currNode));
-                break;
+
+                return CalculatePath(grid, currNode);
             }
             var neighbours = GetAdjacents(grid, currNode.Pos);
             foreach (var neighbourPos in neighbours)
@@ -52,6 +56,8 @@ internal class Program
             }
 
         }
+
+        return -1;
     }
 
     public static void Solve2()
