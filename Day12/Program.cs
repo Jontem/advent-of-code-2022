@@ -50,17 +50,11 @@
             var currNode = queue.Dequeue();
             if (currNode.Value == End)
             {
-                var val = CalculatePath(grid, currNode);
-                return val;
+                return CalculatePath(grid, currNode);
             }
             var neighbours = GetNeighbours(grid, currNode.Pos);
-            foreach (var neighbourPos in neighbours)
+            foreach (var neighbourPos in neighbours.Where(n => !visited.Contains(n)))
             {
-                if (visited.Contains(neighbourPos))
-                {
-                    continue;
-                }
-
                 if (GetRealValue(grid[neighbourPos.Y][neighbourPos.X]) <= GetRealValue(currNode.Value) + 1)
                 {
                     queue.Enqueue(new Node(grid[neighbourPos.Y][neighbourPos.X], neighbourPos, currNode));
