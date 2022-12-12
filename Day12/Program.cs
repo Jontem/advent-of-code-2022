@@ -41,6 +41,8 @@
     private static Char End = Char.Parse("E");
     private static Char Start = Char.Parse("S");
 
+    // BFS works because the weight is always one.
+    // The first time we visit a node will always be the shortest
     private static int BFS(List<List<char>> grid, Node start)
     {
         var queue = new Queue<Node>(new List<Node> { start });
