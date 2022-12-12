@@ -99,17 +99,17 @@
 
     private static List<Vector2d> GetNeighbours(List<List<Char>> grid, Vector2d current)
     {
-        var adjacents = new List<Vector2d>();
+        var neighbours = new List<Vector2d>();
         foreach (var dir in Directions)
         {
             var pos = new Vector2d(current.X + dir.X, current.Y + dir.Y);
             if ((pos.Y >= 0 && pos.Y < grid.Count) && (pos.X >= 0 && pos.X < grid[0].Count))
             {
-                adjacents.Add(pos);
+                neighbours.Add(pos);
             }
         }
 
-        return adjacents;
+        return neighbours;
     }
 
     private static int CalculatePath(List<List<Char>> grid, Node? node)
