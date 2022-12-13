@@ -47,8 +47,8 @@ internal class Program
     public static void Solve2()
     {
         var pairs = Parse();
-        var two = new Packet.PacketList(new List<Packet> { new Packet.PacketList(new List<Packet> { new Packet.PrimitivePacket(2) }) });
-        var six = new Packet.PacketList(new List<Packet> { new Packet.PacketList(new List<Packet> { new Packet.PrimitivePacket(6) }) });
+        var two = Parse("[[2]]");
+        var six = Parse("[[6]]");
         pairs.Add((two, six));
 
         var allPackets = pairs
