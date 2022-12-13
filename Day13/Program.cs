@@ -130,13 +130,11 @@ internal class Program
                 {
                     return 1;
                 }
-                else
+
+                var comparison = Compare(leftList.Items[i], rightList.Items[i]);
+                if (comparison != 0)
                 {
-                    var comparison = Compare(leftList.Items[i], rightList.Items[i]);
-                    if (comparison != 0)
-                    {
-                        return comparison;
-                    }
+                    return comparison;
                 }
             }
         }
