@@ -37,7 +37,6 @@ internal class Program
 
             if (comparison == -1)
             {
-                Console.WriteLine("Index: " + idx);
                 indexes.Add(idx);
             }
         }
@@ -47,6 +46,22 @@ internal class Program
 
     public static void Solve2()
     {
+        var pairs = Parse();
+        var two = new Packet.PacketList(new List<Packet> { new Packet.PacketList(new List<Packet> { new Packet.PrimitivePacket(2) }) });
+        var six = new Packet.PacketList(new List<Packet> { new Packet.PacketList(new List<Packet> { new Packet.PrimitivePacket(6) }) });
+        pairs.Add((two, six));
+
+        var allPackets = pairs
+        .Select(packetPair => new List<Packet> { packetPair.Item1, packetPair.Item2 })
+        .SelectMany(x => x)
+        .ToList();
+
+        allPackets.Sort(Compare);
+
+        var index2 = allPackets.FindIndex(ap => ap == two) + 1;
+        var index6 = allPackets.FindIndex(ap => ap == six) + 1;
+
+        Console.WriteLine("Product: " + index2 * index6);
     }
 
     record Packet
@@ -83,7 +98,6 @@ internal class Program
             var left = Parse(split[0]);
             var right = Parse(split[1]);
             pairs.Add((left, right));
-
         }
 
         return pairs;
