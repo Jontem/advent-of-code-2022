@@ -1,5 +1,12 @@
 ﻿internal class Program
 {
+    const string AIR = ".";
+    const string ROCK = "#";
+    const string SAND = "O";
+    static List<Vector2d> Directions = new List<Vector2d> { new Vector2d(0, 1), new Vector2d(-1, 1), new Vector2d(1, 1) };
+    record Vector2d(int X, int Y);
+    record Rock(List<Vector2d> paths);
+
     private static void Main(string[] args)
     {
         Console.WriteLine("------------- Part 1 -------------");
@@ -8,7 +15,6 @@
         Solve2();
     }
 
-    static List<Vector2d> Directions = new List<Vector2d> { new Vector2d(0, 1), new Vector2d(-1, 1), new Vector2d(1, 1) };
 
     public static void Solve1()
     {
@@ -107,10 +113,6 @@
                 .ToList();
     }
 
-    const string AIR = ".";
-    const string ROCK = "#";
-    const string SAND = "O";
-
     private static void PrintGrid(List<List<string>> grid)
     {
         var rocks = ParseRocks();
@@ -189,7 +191,4 @@
 
         return grid;
     }
-
-    record Vector2d(int X, int Y);
-    record Rock(List<Vector2d> paths);
 }
