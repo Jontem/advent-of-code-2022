@@ -18,7 +18,7 @@
         var rockYMax = rocks.SelectMany(x => x.paths.Select(y => y.Y)).Max() + 1;
 
         var grid = CreateGrid(xMax, rockYMax);
-        PlaceRocks(grid, rocks, false);
+        PlaceRocks(grid, rocks);
         // PrintGrid(grid);
 
         var currentSand = new Vector2d(500, 0);
@@ -70,7 +70,7 @@
         var rockMax = rocks.SelectMany(x => x.paths.Select(y => y.Y)).Max() + 1;
 
         var grid = CreateGrid(xMax, rockMax);
-        PlaceRocks(grid, rocks, true);
+        PlaceRocks(grid, rocks);
         var yMax = grid.Count;
         // PrintGrid(grid);
 
@@ -161,7 +161,7 @@
 
     }
 
-    private static void PlaceRocks(List<List<string>> grid, List<Rock> rocks, bool part2)
+    private static void PlaceRocks(List<List<string>> grid, List<Rock> rocks)
     {
         foreach (var rock in rocks)
         {
@@ -186,24 +186,21 @@
                 }
             }
         }
-
-        if (part2)
+        var emptyRow = new List<string>();
+        for (var i = 0; i < grid[0].Count; i++)
         {
-            var emptyRow = new List<string>();
-            for (var i = 0; i < grid[0].Count; i++)
-            {
-                emptyRow.Add(AIR);
-            }
-            var floor = new List<string>();
-            for (var i = 0; i < grid[0].Count; i++)
-            {
-                floor.Add(ROCK);
-            }
-
-            grid.Add(emptyRow);
-            grid.Add(floor);
-
+            emptyRow.Add(AIR);
         }
+        var floor = new List<string>();
+        for (var i = 0; i < grid[0].Count; i++)
+        {
+            floor.Add(ROCK);
+        }
+
+        grid.Add(emptyRow);
+        grid.Add(floor);
+
+
     }
 
     private static List<List<string>> CreateGrid(int xMax, int yMax)
