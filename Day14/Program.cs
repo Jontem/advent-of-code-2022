@@ -14,13 +14,12 @@
     {
         var rocks = ParseRocks();
         var xMin = rocks.SelectMany(x => x.paths.Select(y => y.X)).Min();
-        var xMax = rocks.SelectMany(x => x.paths.Select(y => y.X)).Max() + 1;
-        // var yMin = rocks.SelectMany(x => x.paths.Select(y => y.Y)).Min();
-        var yMax = rocks.SelectMany(x => x.paths.Select(y => y.Y)).Max() + 1;
+        var xMax = rocks.SelectMany(x => x.paths.Select(y => y.X)).Max() + 1000;
+        var rockYMax = rocks.SelectMany(x => x.paths.Select(y => y.Y)).Max() + 1;
 
-        var grid = CreateGrid(xMax, yMax);
-        PlaceRocks(grid, rocks);
-        PrintGrid(grid, xMin, xMax, yMax);
+        var grid = CreateGrid(xMax, rockYMax);
+        PlaceRocks(grid, rocks, false);
+        // PrintGrid(grid);
 
         var currentSand = new Vector2d(500, 0);
         var unitsOfSand = 0;
@@ -31,7 +30,7 @@
             {
                 var newY = currentSand.Y + direction.Y;
                 var newX = currentSand.X + direction.X;
-                if (!IsInside(yMax, xMin, xMax, new Vector2d(newX, newY)) || grid[newY][newX] == AIR)
+                if (!IsInside(rockYMax, xMin, xMax, new Vector2d(newX, newY)) || grid[newY][newX] == AIR)
                 {
                     temp = new Vector2d(newX, newY);
                     break;
@@ -39,7 +38,7 @@
             }
 
             // outside of grid
-            if (!IsInside(yMax, xMin, xMax, temp) || temp == new Vector2d(500, 0))
+            if (!IsInside(rockYMax, xMin, xMax, temp) || temp == new Vector2d(500, 0))
             {
                 break;
             }
@@ -63,9 +62,64 @@
 
     }
 
+    public static void Solve2()
+    {
+        var rocks = ParseRocks();
+        var xMax = rocks.SelectMany(x => x.paths.Select(y => y.X)).Max() + 1000;
+        // var yMin = rocks.SelectMany(x => x.paths.Select(y => y.Y)).Min();
+        var rockMax = rocks.SelectMany(x => x.paths.Select(y => y.Y)).Max() + 1;
+
+        var grid = CreateGrid(xMax, rockMax);
+        PlaceRocks(grid, rocks, true);
+        var yMax = grid.Count;
+        // PrintGrid(grid);
+
+        var currentSand = new Vector2d(500, 0);
+        var unitsOfSand = 0;
+        while (true)
+        {
+            var temp = currentSand;
+            foreach (var direction in Directions)
+            {
+                var newY = currentSand.Y + direction.Y;
+                var newX = currentSand.X + direction.X;
+                if (!IsInside(yMax, 0, xMax, new Vector2d(newX, newY)) || grid[newY][newX] == AIR)
+                {
+                    temp = new Vector2d(newX, newY);
+                    break;
+                }
+            }
+
+            // outside of grid
+            if (!IsInside(yMax, 0, xMax, temp) || temp == new Vector2d(500, 0))
+            {
+                grid[temp.Y][temp.X] = SAND;
+                unitsOfSand++;
+                // PrintGrid(grid);
+                break;
+            }
+
+            // At rest
+            if (currentSand == temp)
+            {
+                grid[temp.Y][temp.X] = SAND;
+                currentSand = new Vector2d(500, 0);
+                // PrintGrid(grid, xMin, xMax, yMax);
+                unitsOfSand++;
+                continue;
+            }
+
+
+            currentSand = temp;
+
+        }
+
+        Console.WriteLine("Units of sand: " + unitsOfSand);
+    }
+
     private static bool IsInside(int yMax, int xMin, int xMax, Vector2d currentSand)
     {
-        return currentSand.Y < yMax && currentSand.X >= xMin && currentSand.X <= xMax;
+        return currentSand.Y < yMax && currentSand.X >= xMin && currentSand.X < xMax;
     }
 
     private static List<Rock> ParseRocks()
@@ -87,8 +141,12 @@
     const string ROCK = "#";
     const string SAND = "O";
 
-    private static void PrintGrid(List<List<string>> grid, int xMin, int xMax, int yMax)
+    private static void PrintGrid(List<List<string>> grid)
     {
+        var rocks = ParseRocks();
+        var xMin = rocks.SelectMany(x => x.paths.Select(y => y.X)).SkipLast(1).Min() - 4;
+        var xMax = rocks.SelectMany(x => x.paths.Select(y => y.X)).SkipLast(1).Max() + 4;
+        var yMax = grid.Count;
         Console.WriteLine("-----------------");
         foreach (var y in Enumerable.Range(0, yMax))
         {
@@ -103,7 +161,7 @@
 
     }
 
-    private static void PlaceRocks(List<List<string>> grid, List<Rock> rocks)
+    private static void PlaceRocks(List<List<string>> grid, List<Rock> rocks, bool part2)
     {
         foreach (var rock in rocks)
         {
@@ -128,6 +186,24 @@
                 }
             }
         }
+
+        if (part2)
+        {
+            var emptyRow = new List<string>();
+            for (var i = 0; i < grid[0].Count; i++)
+            {
+                emptyRow.Add(AIR);
+            }
+            var floor = new List<string>();
+            for (var i = 0; i < grid[0].Count; i++)
+            {
+                floor.Add(ROCK);
+            }
+
+            grid.Add(emptyRow);
+            grid.Add(floor);
+
+        }
     }
 
     private static List<List<string>> CreateGrid(int xMax, int yMax)
@@ -144,10 +220,6 @@
         }
 
         return grid;
-    }
-
-    public static void Solve2()
-    {
     }
 
     record Vector2d(int X, int Y);
